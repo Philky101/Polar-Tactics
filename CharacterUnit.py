@@ -1,4 +1,4 @@
-class Sprite:
+class CharacterUnit:
 
     def __init__ (self, name, hp, dmg, image):
         self.name = name
