@@ -28,10 +28,12 @@ textY = 10
 colorLGreen = (0, 255, 0)
 colorDGreen = (0, 110, 0)
 colorBlue = (0, 0, 255)
+colorLBlue = (53, 81, 94)
 colorRed = (255, 0, 0)
 colorBlack = (0, 0, 0)
 colorWhite = (255, 255, 255)
 colorGrey = (50, 50, 50)
+colorYellow = (255, 255, 0)
 
 #Clock
 clock = pygame.time.Clock()
@@ -40,6 +42,34 @@ msPerUpdate = 16
 #Keypresses
 global escPressed
 escPressed = False
+
+#Terrain
+#Snow = 0, white
+#Hill = 1, yellow
+#Water = 2, blue
+#Ice = 3, baby blue
+#Mountain = 4, black
+
+#Map 1
+mapOne = [
+    4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 0, 0, 0, 1, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 1, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 0, 0, 1, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 2, 0, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 2, 2, 0, 0, 0, 0, 4, 4, 4, 4,
+    4, 4, 4, 4, 2, 2, 0, 0, 0, 0, 4, 4, 4, 4,
+    
+]
+mapWidth = int(math.sqrt(int(len(mapOne))))
+mapSize = len(mapOne)
 
 def pause_menu():
     
@@ -112,37 +142,61 @@ def drawGameMap(mapX, mapY, mapNum):
     xGreaterThanY = True
     if screenWidth >= screenHeight:
         xGreaterThanY = True
-        mapXOffset = (screenWidth-screenHeight)/2
-        tileSize = (screenHeight/mapY)-2
+        mapXOffset = (screenWidth-screenHeight-(2*border))/2
+        tileSize = ((screenHeight-(2*border))/mapY)
     else:
         xGreaterThanY = False
-        mapYOffset = (screenHeight-screenWidth)/2
-        tileSize = (screenWidth/mapX)-2
+        mapYOffset = (screenHeight-screenWidth-(2*border))/2
+        tileSize = ((screenWidth-(2*border))/mapX)
     for i in range(mapY):
         for j in range(mapX):
             if(mapNum[i*mapX+j]==1):
                 if xGreaterThanY:
-                    tileX = (j*(screenHeight/mapY))+1+mapXOffset
-                    tileY = (i*(screenHeight/mapY))+1
+                    tileX = (j*((screenHeight-2*border)/mapY))+border
+                    tileY = (i*((screenHeight-2*border)/mapY))+border
                 else:
-                    tileX = (j*(screenWidth/mapX))+1
-                    tileY = (i*(screenWidth/mapX))+1+mapYOffset
-                pygame.draw.rect(screen, colorBlack, (tileX, tileY, tileSize, tileSize))
+                    tileX = (j*((screenWidth-2*border)/mapX))+border
+                    tileY = (i*((screenWidth-2*border)/mapX))+border
+                pygame.draw.rect(screen, colorYellow, (tileX, tileY, tileSize, tileSize))
             elif(mapNum[i*mapX+j]==0):
                 if xGreaterThanY:
-                    tileX = (j*(screenHeight/mapY))+1+mapXOffset
-                    tileY = (i*(screenHeight/mapY))+1
+                    tileX = (j*((screenHeight-2*border)/mapY))+border
+                    tileY = (i*((screenHeight-2*border)/mapY))+border
                 else:
-                    tileX = (j*(screenWidth/mapX))+1
-                    tileY = (i*(screenWidth/mapX))+1+mapYOffset
+                    tileX = (j*((screenWidth-2*border)/mapX))+border
+                    tileY = (i*((screenWidth-2*border)/mapX))+border
                 pygame.draw.rect(screen, colorWhite, (tileX, tileY, tileSize, tileSize))
+            elif(mapNum[i*mapX+j]==2):
+                if xGreaterThanY:
+                    tileX = (j*((screenHeight-2*border)/mapY))+border
+                    tileY = (i*((screenHeight-2*border)/mapY))+border
+                else:
+                    tileX = (j*((screenWidth-2*border)/mapX))+border
+                    tileY = (i*((screenWidth-2*border)/mapX))+border
+                pygame.draw.rect(screen, colorBlue, (tileX, tileY, tileSize, tileSize))
+            elif(mapNum[i*mapX+j]==3):
+                if xGreaterThanY:
+                    tileX = (j*((screenHeight-2*border)/mapY))+border
+                    tileY = (i*((screenHeight-2*border)/mapY))+border
+                else:
+                    tileX = (j*((screenWidth-2*border)/mapX))+border
+                    tileY = (i*((screenWidth-2*border)/mapX))+border
+                pygame.draw.rect(screen, colorLBlue, (tileX, tileY, tileSize, tileSize))
+            elif(mapNum[i*mapX+j]==4):
+                if xGreaterThanY:
+                    tileX = (j*((screenHeight-2*border)/mapY))+border
+                    tileY = (i*((screenHeight-2*border)/mapY))+border
+                else:
+                    tileX = (j*((screenWidth-2*border)/mapX))+border
+                    tileY = (i*((screenWidth-2*border)/mapX))+border
+                pygame.draw.rect(screen, colorBlack, (tileX, tileY, tileSize, tileSize))
 
 #Game Loop
 running = True
 while running:
 
     #RGB of Background
-    screen.fill(colorWhite)
+    screen.fill(colorLBlue)
     #pygame.draw.rect(screen, colorGrey, (border, border, screenWidth-2*border, screenHeight-2*border))
 
     #Pause Menu
@@ -153,6 +207,8 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 pause_menu()
+
+    drawGameMap(mapWidth, mapWidth, mapOne)
 
     #Checks Framerate
     dt = clock.tick(60)
