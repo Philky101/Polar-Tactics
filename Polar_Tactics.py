@@ -7,6 +7,7 @@ from pygame import mixer
 screenWidth = 1024
 screenHeight = 1024
 screen = pygame.display.set_mode((screenWidth, screenHeight))
+border = ((screenHeight+screenWidth)/2)/16
 
 #Background Sound
 #mixer.music.load(NAME)
@@ -43,6 +44,7 @@ escPressed = False
 def pause_menu():
     
     menuPosition = 1
+    pressed = 0
     while True:
 
         screen.fill(colorGrey)
@@ -51,11 +53,9 @@ def pause_menu():
             cont = font.render("Continue", True, colorLGreen)
             sett = font.render("Settings", True, colorDGreen)
             leave = font.render("Quit", True, colorDGreen)
-            pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        menuPosition = 1
                         escPressed = False
                         return True
         if(menuPosition == 2):
@@ -66,14 +66,12 @@ def pause_menu():
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        menuPosition = 1
                         escPressed = False
                         return True
         if(menuPosition == 3):
             cont = font.render("Continue", True, colorDGreen)
             sett = font.render("Settings", True, colorDGreen)
             leave = font.render("Quit", True, colorLGreen)
-            pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
@@ -81,22 +79,63 @@ def pause_menu():
                         running = False
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_DOWN:
+                if event.key == pygame.K_DOWN and pressed == 0:
                     if(menuPosition >= 3):
                         menuPosition = 1
                     else:
                         menuPosition += 1
-                if event.key == pygame.K_UP:
+                    pressed += 1
+                if event.key == pygame.K_UP and pressed == 0:
                     if(menuPosition <= 1):
                         menuPosition = 3
                     else:
                         menuPosition -= 1
+                    pressed += 1
+            if event.type == pygame.KEYUP:
+                pressed = 0
             if event.type == pygame.QUIT:
                 pygame.quit()
                 running = False
         screen.blit(cont, ((screenWidth/2)-(textX*8), screenHeight/2 - screenHeight/4))
         screen.blit(sett, ((screenWidth/2)-(textX*8), screenHeight/2))
         screen.blit(leave, ((screenWidth/2)-(textX*4), screenHeight/2 + screenHeight/4))
+        #debug = font.render(str(pressed), True, colorRed)
+        #screen.blit(debug, ((screenWidth/2)-(textX*4), screenHeight/2 + screenHeight/6))
+        pygame.display.update()
+
+def drawGameMap(mapX, mapY, mapNum):
+    tileX = 0
+    tileY = 0
+    mapXOffset = 0
+    mapYOffset = 0
+    tileSize = 63
+    xGreaterThanY = True
+    if screenWidth >= screenHeight:
+        xGreaterThanY = True
+        mapXOffset = (screenWidth-screenHeight)/2
+        tileSize = (screenHeight/mapY)-2
+    else:
+        xGreaterThanY = False
+        mapYOffset = (screenHeight-screenWidth)/2
+        tileSize = (screenWidth/mapX)-2
+    for i in range(mapY):
+        for j in range(mapX):
+            if(mapNum[i*mapX+j]==1):
+                if xGreaterThanY:
+                    tileX = (j*(screenHeight/mapY))+1+mapXOffset
+                    tileY = (i*(screenHeight/mapY))+1
+                else:
+                    tileX = (j*(screenWidth/mapX))+1
+                    tileY = (i*(screenWidth/mapX))+1+mapYOffset
+                pygame.draw.rect(screen, colorBlack, (tileX, tileY, tileSize, tileSize))
+            elif(mapNum[i*mapX+j]==0):
+                if xGreaterThanY:
+                    tileX = (j*(screenHeight/mapY))+1+mapXOffset
+                    tileY = (i*(screenHeight/mapY))+1
+                else:
+                    tileX = (j*(screenWidth/mapX))+1
+                    tileY = (i*(screenWidth/mapX))+1+mapYOffset
+                pygame.draw.rect(screen, colorWhite, (tileX, tileY, tileSize, tileSize))
 
 #Game Loop
 running = True
@@ -104,7 +143,7 @@ while running:
 
     #RGB of Background
     screen.fill(colorWhite)
-    #pygame.draw.rect(screen, colorGrey, (0, 0, screenWidth, screenHeight))
+    #pygame.draw.rect(screen, colorGrey, (border, border, screenWidth-2*border, screenHeight-2*border))
 
     #Pause Menu
     for event in pygame.event.get():
