@@ -13,7 +13,7 @@ screen = pygame.display.set_mode((screenWidth, screenHeight))
 #mixer.music.play(-1)
 
 #Title and Icon
-pygame.display.set_caption("Ray Caster")
+pygame.display.set_caption("Arctic Antics")
 #icon = pygame.image.load(NAME)
 #pygame.display.set_icon(icon)
 
@@ -40,25 +40,25 @@ msPerUpdate = 16
 global escPressed
 escPressed = False
 
-def pause_menu(initialState):
+def pause_menu():
     
-    menuPosition = initialState
+    menuPosition = 1
     while True:
 
+        screen.fill(colorGrey)
+        
         if(menuPosition == 1):
-            screen.fill(colorGrey)
             cont = font.render("Continue", True, colorLGreen)
             sett = font.render("Settings", True, colorDGreen)
             leave = font.render("Quit", True, colorDGreen)
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
+                    if event.key == pygame.K_RETURN:
                         menuPosition = 1
                         escPressed = False
                         return True
         if(menuPosition == 2):
-            screen.fill(colorGrey)
             cont = font.render("Continue", True, colorDGreen)
             sett = font.render("Settings", True, colorLGreen)
             leave = font.render("Quit", True, colorDGreen)
@@ -70,7 +70,6 @@ def pause_menu(initialState):
                         escPressed = False
                         return True
         if(menuPosition == 3):
-            screen.fill(colorGrey)
             cont = font.render("Continue", True, colorDGreen)
             sett = font.render("Settings", True, colorDGreen)
             leave = font.render("Quit", True, colorLGreen)
@@ -114,7 +113,7 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                pause_menu(1)
+                pause_menu()
 
     #Checks Framerate
     dt = clock.tick(60)
