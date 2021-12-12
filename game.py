@@ -1,19 +1,28 @@
 import pygame
 from menu import *
+from level import *
 
 class Game():
 
-    def __init__(self):
+    def __init__(self, mapArray):
         pygame.init()
         self.running, self.playing = True, False
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.ESC_KEY = False
         self.DISPLAY_W, self.DISPLAY_H = 1024, 1024
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
         self.font_name = "freesansbold.ttf"
         self.BLACK, self.WHITE = (0,0,0), (255,255,255)
+        self.GREY = (50,50,50)
+        self.LGREEN, self.DGREEN = (0,255,0), (0,110,0)
+        self.BLUE, self.LBLUE = (0,0,255), (53,81,94)
+        self.RED = (255,0,0)
+        self.YELLOW = (255,255,0)
+        self.mapData = mapArray
         self.pause_menu = PauseMenu(self)
         self.curr_menu = self.pause_menu
+        self.curr_level = Level(self, self.mapData)
 
     def gameLoop(self):
         while self.playing:
@@ -39,6 +48,8 @@ class Game():
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
+                if event.key == pygame.K_ESCAPE:
+                    self.ESC_KEY = True
 
     def resetKeys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False

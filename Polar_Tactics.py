@@ -193,8 +193,9 @@ def drawGameMap(mapX, mapY, mapNum):
                     tileY = (i*((screenWidth-2*border)/mapX))+border
                 pygame.draw.rect(screen, colorBlack, (tileX, tileY, tileSize, tileSize))
 
-g = Game()
+g = Game(mapOne)
 while g.running:
+    g.curr_level.displayLevel()
     g.curr_menu.displayMenu()
     g.gameLoop()
 
