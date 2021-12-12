@@ -2,6 +2,7 @@ import pygame
 import random
 import math
 from pygame import mixer
+from game import Game
 
 #Creates Screen
 screenWidth = 1024
@@ -40,6 +41,7 @@ clock = pygame.time.Clock()
 msPerUpdate = 16
 
 #Keypresses
+buttonState = "Ready"
 global escPressed
 escPressed = False
 
@@ -71,66 +73,66 @@ mapOne = [
 mapWidth = int(math.sqrt(int(len(mapOne))))
 mapSize = len(mapOne)
 
-def pause_menu():
+def pressButton(buttonName):
+    target = buttonName
+    global buttonState
+    event = pygame.event.poll()
+    if event.type == pygame.KEYDOWN:
+        if event.key == target and buttonState == "Ready":
+            buttonState = "Occupied"
+            pygame.event.clear
+            return True
+
+def resetButton(buttonName):
+    while True:
+        target = buttonName
+        global buttonState
+        event = pygame.event.poll()
+        if event.type == pygame.KEYUP:
+            if event.key == target and buttonState == "Occupied":
+                buttonState = "Ready"
+                return True
+
+def pauseMenu():
     
     menuPosition = 1
-    pressed = 0
     while True:
 
         screen.fill(colorGrey)
-        
-        if(menuPosition == 1):
+        cont = font.render("Continue", True, colorDGreen)
+        sett = font.render("Settings", True, colorDGreen)
+        leave = font.render("Quit", True, colorDGreen)
+
+        if pressButton(pygame.K_DOWN):
+            global buttonState
+            buttonState = "Ready"
+            if(menuPosition >= 3):
+                menuPosition = 1
+            else:
+                menuPosition += 1
+
+        if (menuPosition == 1):
             cont = font.render("Continue", True, colorLGreen)
-            sett = font.render("Settings", True, colorDGreen)
-            leave = font.render("Quit", True, colorDGreen)
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:
-                        escPressed = False
-                        return True
-        if(menuPosition == 2):
-            cont = font.render("Continue", True, colorDGreen)
+            if pressButton(pygame.K_RETURN):
+                escPressed = False
+                buttonState = "Ready"
+                return True
+        if (menuPosition == 2):
             sett = font.render("Settings", True, colorLGreen)
-            leave = font.render("Quit", True, colorDGreen)
-            pygame.display.update()
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:
-                        escPressed = False
-                        return True
-        if(menuPosition == 3):
-            cont = font.render("Continue", True, colorDGreen)
-            sett = font.render("Settings", True, colorDGreen)
+            if pressButton(pygame.K_RETURN):
+                escPressed = False
+                buttonState = "Ready"
+                return True
+        if (menuPosition == 3):
             leave = font.render("Quit", True, colorLGreen)
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:
-                        pygame.quit()
-                        running = False
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_DOWN and pressed == 0:
-                    if(menuPosition >= 3):
-                        menuPosition = 1
-                    else:
-                        menuPosition += 1
-                    pressed += 1
-                if event.key == pygame.K_UP and pressed == 0:
-                    if(menuPosition <= 1):
-                        menuPosition = 3
-                    else:
-                        menuPosition -= 1
-                    pressed += 1
-            if event.type == pygame.KEYUP:
-                pressed = 0
-            if event.type == pygame.QUIT:
+            if pressButton(pygame.K_RETURN):
+                buttonState = "Ready"
                 pygame.quit()
                 running = False
+        
         screen.blit(cont, ((screenWidth/2)-(textX*8), screenHeight/2 - screenHeight/4))
         screen.blit(sett, ((screenWidth/2)-(textX*8), screenHeight/2))
         screen.blit(leave, ((screenWidth/2)-(textX*4), screenHeight/2 + screenHeight/4))
-        #debug = font.render(str(pressed), True, colorRed)
-        #screen.blit(debug, ((screenWidth/2)-(textX*4), screenHeight/2 + screenHeight/6))
         pygame.display.update()
 
 def drawGameMap(mapX, mapY, mapNum):
@@ -191,7 +193,13 @@ def drawGameMap(mapX, mapY, mapNum):
                     tileY = (i*((screenWidth-2*border)/mapX))+border
                 pygame.draw.rect(screen, colorBlack, (tileX, tileY, tileSize, tileSize))
 
+g = Game()
+while g.running:
+    g.curr_menu.displayMenu()
+    g.gameLoop()
+
 #Game Loop
+'''
 running = True
 while running:
 
@@ -206,7 +214,7 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                pause_menu()
+                pauseMenu()
 
     drawGameMap(mapWidth, mapWidth, mapOne)
 
@@ -214,3 +222,4 @@ while running:
     dt = clock.tick(60)
 
     pygame.display.update()
+'''
